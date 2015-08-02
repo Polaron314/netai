@@ -1,6 +1,5 @@
 package com.matrix.netai;
 
-import java.util.Arrays;
 import java.util.Scanner;
 
 import com.matrix.netai.cortex.CType;
@@ -8,6 +7,7 @@ import com.matrix.netai.cortex.CType;
 public class Start {
 	
 	public static Log log = new Log(System.out);
+	public static double errorMargin = 0.01;
 
 	public static void main(String[] args) {
 		Trainer t = new Trainer();
@@ -16,7 +16,6 @@ public class Start {
 		while(true) {
 			Scanner s = new Scanner(System.in);
 			double[] output = b.calculate(t.dataToNeu(t.stringToDoub(s.nextLine())));
-			System.out.println(Arrays.toString(output));
 			int cint = 0;
 			double max = 0;
 			for(int i = 0; i < output.length; i++) {

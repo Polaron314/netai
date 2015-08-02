@@ -13,16 +13,21 @@ import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.propagation.back.Backpropagation;
 
-import com.matrix.netai.cortex.CType;
-import com.matrix.netai.cortex.Cortex;
+import com.matrix.netai.cortex.*;
 
 public class Brain {
 
-	BasicNetwork network = new BasicNetwork();
-	List<Cortex> cortexes = new ArrayList<Cortex>();
+	private BasicNetwork network = new BasicNetwork();
+	private List<Cortex> cortexes = new ArrayList<Cortex>();
 
 	public Brain() {
-
+		
+	}
+	
+	public void typesHandled(CType[] types) {
+		for(CType type : types) {
+			cortexes.add(new BasicCortex(type, this));
+		}
 	}
 
 	public void initNet(int[] layers) {
@@ -43,10 +48,14 @@ public class Brain {
 		do {
 
 			train.iteration();
-			Start.log.info("Epoch #" + epoch + " Error:" + train.getError());
+			Start.log.info("Brain: Epoch #" + epoch + " Error:" + train.getError());
 			epoch++;
 
-		} while (train.getError() > 0.01);
+		} while (train.getError() > Start.errorMargin);
+	}
+	
+	public Cortex[] getCortexes() {
+		return cortexes.toArray(new Cortex[cortexes.size()]);
 	}
 	
 	public double[] calculate(double[] inputs) {

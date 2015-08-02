@@ -10,23 +10,30 @@ import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.propagation.back.Backpropagation;
 
+import com.matrix.netai.Brain;
+import com.matrix.netai.Start;
+
 public class BasicCortex implements Cortex{
 	
 	BasicNetwork network = new BasicNetwork();
 	private final CType type;
+	private final Brain brain;
 	
-	BasicCortex(CType type) {
+	public BasicCortex(CType type, Brain brain) {
 		this.type = type;
+		this.brain = brain;
 	}
 	
 	private void initNet(int[] layers) {
 		for (int i : layers) {
 			network.addLayer(new BasicLayer(new ActivationSigmoid(), true, i));
 		}
+		network.getStructure().finalizeStructure();
 	}
 
-	public void train(double[][] inputs, double[][] outputs, int[] layers) {
-		this.initNet(layers);
+	public void train(double[][] inputs, double[][] outputs) {
+		int[] layers = {inputs[0].length, inputs[0].length, outputs[0].length, outputs[0].length};
+		initNet(layers);
 		network.reset();
 		NeuralDataSet trainingSet = new BasicNeuralDataSet(inputs, outputs);
 		final Train train = new Backpropagation(network, trainingSet);
@@ -35,10 +42,10 @@ public class BasicCortex implements Cortex{
 		do {
 
 			train.iteration();
-			System.out.println("Epoch #" + epoch + " Error:" + train.getError());
+			Start.log.info("Cortex " + this.type.name() + ": Epoch #" + epoch + " Error:" + train.getError());
 			epoch++;
 
-		} while (train.getError() > 0.01);
+		} while (train.getError() > Start.errorMargin);
 	}
 	
 	public double[] calculate(double[] inputs) {
