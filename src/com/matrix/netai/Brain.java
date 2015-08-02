@@ -1,9 +1,7 @@
 package com.matrix.netai;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.ml.data.MLData;
@@ -84,4 +82,7 @@ public class Brain {
 		}
 		return CType.getFromIndex(cint);
 	}
+	
+	
+	
 }
