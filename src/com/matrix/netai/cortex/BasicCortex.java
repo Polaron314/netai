@@ -1,4 +1,4 @@
-package com.matrix.grouping;
+package com.matrix.netai.cortex;
 
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.ml.data.MLData;
@@ -10,21 +10,23 @@ import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.propagation.back.Backpropagation;
 
-public class Brain {
-
+public class BasicCortex implements Cortex{
+	
 	BasicNetwork network = new BasicNetwork();
-
-	public Brain() {
-
+	private final CType type;
+	
+	BasicCortex(CType type) {
+		this.type = type;
 	}
-
-	public void initNet(int[] layers) {
+	
+	private void initNet(int[] layers) {
 		for (int i : layers) {
 			network.addLayer(new BasicLayer(new ActivationSigmoid(), true, i));
 		}
 	}
 
-	public void train(double[][] inputs, double[][] outputs) {
+	public void train(double[][] inputs, double[][] outputs, int[] layers) {
+		this.initNet(layers);
 		network.reset();
 		NeuralDataSet trainingSet = new BasicNeuralDataSet(inputs, outputs);
 		final Train train = new Backpropagation(network, trainingSet);
@@ -43,4 +45,10 @@ public class Brain {
 		MLData in = new BasicNeuralData(inputs);
 		return network.compute(in).getData();
 	}
+
+	@Override
+	public CType getType() {
+		return type;
+	}
+	
 }
