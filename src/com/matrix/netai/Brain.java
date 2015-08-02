@@ -1,6 +1,8 @@
 package com.matrix.netai;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 import org.encog.engine.network.activation.ActivationSigmoid;
@@ -18,7 +20,7 @@ import com.matrix.netai.cortex.*;
 public class Brain {
 
 	private BasicNetwork network = new BasicNetwork();
-	private List<Cortex> cortexes = new ArrayList<Cortex>();
+	private HashMap<CType, Cortex> cortexes = new HashMap<CType, Cortex>();
 
 	public Brain() {
 		
@@ -26,7 +28,7 @@ public class Brain {
 	
 	public void typesHandled(CType[] types) {
 		for(CType type : types) {
-			cortexes.add(new BasicCortex(type, this));
+			cortexes.put(type, new BasicCortex(type, this));
 		}
 	}
 
@@ -55,11 +57,31 @@ public class Brain {
 	}
 	
 	public Cortex[] getCortexes() {
-		return cortexes.toArray(new Cortex[cortexes.size()]);
+		Collection<Cortex> cs = cortexes.values();
+		return cs.toArray(new Cortex[cs.size()]);
+	}
+	
+	public double[] shallowCalculate(double[] inputs) {
+		MLData in = new BasicNeuralData(inputs);
+		return network.compute(in).getData();
 	}
 	
 	public double[] calculate(double[] inputs) {
 		MLData in = new BasicNeuralData(inputs);
-		return network.compute(in).getData();
+		CType type = dataToType(network.compute(in).getData());
+		Cortex c = this.cortexes.get(type);
+		return c.calculate(inputs);
+	}
+	
+	public CType dataToType(double[] d) {
+		int cint = 0;
+		double max = 0;
+		for(int i = 0; i < d.length; i++) {
+			if(d[i] > max) {
+				cint = i;
+				max = d[i];
+			}
+		}
+		return CType.getFromIndex(cint);
 	}
 }

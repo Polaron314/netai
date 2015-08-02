@@ -133,7 +133,7 @@ public class Trainer {
 		}
 		String ret = "";
 		for(String s : wds)
-			ret += s;
+			ret += " " + s;
 		return ret;
 	}
 	

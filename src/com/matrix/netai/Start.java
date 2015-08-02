@@ -2,8 +2,6 @@ package com.matrix.netai;
 
 import java.util.Scanner;
 
-import com.matrix.netai.cortex.CType;
-
 public class Start {
 	
 	public static Log log = new Log(System.out);
@@ -16,15 +14,7 @@ public class Start {
 		while(true) {
 			Scanner s = new Scanner(System.in);
 			double[] output = b.calculate(t.dataToNeu(t.stringToDoub(s.nextLine())));
-			int cint = 0;
-			double max = 0;
-			for(int i = 0; i < output.length; i++) {
-				if(output[i] > max) {
-					cint = i;
-					max = output[i];
-				}
-			}
-			Start.log.info(CType.getFromIndex(cint).name());
+			Start.log.info(t.doubToString(t.neuToData(output)));
 		}
 	}
 
