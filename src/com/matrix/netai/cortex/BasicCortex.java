@@ -1,5 +1,8 @@
 package com.matrix.netai.cortex;
 
+import java.util.HashMap;
+import java.util.HashSet;
+
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.ml.data.MLData;
 import org.encog.neural.data.NeuralDataSet;
@@ -19,6 +22,7 @@ public class BasicCortex implements Cortex{
 	BasicNetwork network = new BasicNetwork();
 	private final CType type;
 	private final Brain brain;
+	private String[] outOrder;
 	
 	public BasicCortex(CType type, Brain brain) {
 		this.type = type;
@@ -33,6 +37,7 @@ public class BasicCortex implements Cortex{
 	}
 
 	public void train(String[] sIn, String[] sOut) {
+		outOrder = sOut;
 		double[][] inputs = new double[sIn.length][Start.words.size()];
 		double[][] outputs = new double[sOut.length][Start.words.size()];
 		for(int i = 0; i < sIn.length; i++) {
@@ -58,12 +63,27 @@ public class BasicCortex implements Cortex{
 	public String calculate(String input) {
 		double[] inputs = Utils.stringToNeu(input);
 		MLData in = new BasicNeuralData(inputs);
-		return Utils.neuToString(network.compute(in).getData());
+		return this.setOrder(Utils.neuToString(network.compute(in).getData()));
 	}
 
 	@Override
 	public CType getType() {
 		return type;
+	}
+	
+	protected String setOrder(String s) {
+		for(String ordered : outOrder) {
+			if(ordered.split(" ").length == s.split(" ").length) {
+				boolean isSame = true;
+				for(String word : ordered.split(" ")) {
+					if(!s.contains(word))
+						isSame = false;
+				}
+				if(isSame)
+					return ordered;
+			}
+		}
+		return s;
 	}
 	
 }

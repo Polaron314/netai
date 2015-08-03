@@ -24,11 +24,10 @@ public class QueryCortex extends BasicCortex implements Cortex{
 	public String calculate(String input) {
 		double[] inputs = Utils.stringToNeu(input);
 		MLData in = new BasicNeuralData(inputs);
-		return this.replaceEntities(network.compute(in).getData());
+		return this.replaceEntities(setOrder(Utils.neuToString(network.compute(in).getData())));
 	}
 	
-	public String replaceEntities(double[] inputs) {
-		String s = Utils.neuToString(inputs);
+	public String replaceEntities(String s) {
 		List<String> process = new ArrayList<String>();
 		process.add(s);
 		for(Entity e : entities) {
