@@ -1,7 +1,7 @@
 package com.matrix.netai.cortex;
 
 public enum CType {
-	sgr(0), sim(1), sit(2);
+	sgr(0), sim(1), sit(2), squ(3);
 	
 	private int index;
 	
@@ -29,6 +29,8 @@ public enum CType {
 			return CType.sim;
 		case 2:
 			return CType.sit;
+		case 3:
+			return CType.squ;
 		default:
 			return null;
 		}

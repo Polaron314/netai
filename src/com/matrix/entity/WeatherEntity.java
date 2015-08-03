@@ -2,7 +2,7 @@ package com.matrix.entity;
 
 public class WeatherEntity implements Entity {
 	
-	private String id = "%w";
+	private String id = "%wt";
 	
 	@Override
 	public String getString() {

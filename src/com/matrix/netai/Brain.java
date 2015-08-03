@@ -13,6 +13,7 @@ import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.propagation.back.Backpropagation;
 
+import com.matrix.entity.*;
 import com.matrix.netai.cortex.*;
 
 public class Brain {
@@ -26,7 +27,11 @@ public class Brain {
 	
 	public void typesHandled(CType[] types) {
 		for(CType type : types) {
-			cortexes.put(type, new BasicCortex(type, this));
+			if(type.equals(CType.squ)) {
+				Entity[] entities = {new WeatherEntity()};
+				cortexes.put(type, new QueryCortex(type, this, entities));
+			} else
+				cortexes.put(type, new BasicCortex(type, this));
 		}
 	}
 
@@ -37,7 +42,14 @@ public class Brain {
 		network.getStructure().finalizeStructure();
 	}
 
-	public void train(double[][] inputs, double[][] outputs) {
+	public void train(String[] s, CType[] types) {
+		double[][] inputs = new double[s.length][Start.words.size()];
+		double[][] outputs = new double[types.length][4];
+		for(int i = 0; i < s.length; i++) {
+			inputs[i] = Utils.stringToNeu(s[i]);
+			double[] a = {types[i].getIndex()};
+			outputs[i] = Utils.dataToNeu(a);
+		}
 		int[] layers = {inputs[0].length, inputs[0].length, outputs[0].length, outputs[0].length};
 		initNet(layers);
 		network.reset();
@@ -59,16 +71,18 @@ public class Brain {
 		return cs.toArray(new Cortex[cs.size()]);
 	}
 	
-	public double[] shallowCalculate(double[] inputs) {
+	public CType shallowCalculate(String input) {
+		double[] inputs = Utils.stringToNeu(input);
 		MLData in = new BasicNeuralData(inputs);
-		return network.compute(in).getData();
+		return dataToType(network.compute(in).getData());
 	}
 	
-	public double[] calculate(double[] inputs) {
+	public String calculate(String input) {
+		double[] inputs = Utils.stringToNeu(input);
 		MLData in = new BasicNeuralData(inputs);
 		CType type = dataToType(network.compute(in).getData());
 		Cortex c = this.cortexes.get(type);
-		return c.calculate(inputs);
+		return c.calculate(input);
 	}
 	
 	public CType dataToType(double[] d) {

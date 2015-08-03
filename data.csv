@@ -5,3 +5,6 @@ Whats up,Nothing much,sGR
 Hey,Hi,sGR
 What are you doing,Talking with you,sIT
 How is your day going,Very well thanks,sIT
+Hows the weather,The weather is %wt,sQU
+Whats the weather like,The weather is %wt,sQU
+Whats the weather like today,The weather is %wt,sQU

@@ -12,6 +12,7 @@ import org.encog.neural.networks.training.propagation.back.Backpropagation;
 
 import com.matrix.netai.Brain;
 import com.matrix.netai.Start;
+import com.matrix.netai.Utils;
 
 public class BasicCortex implements Cortex{
 	
@@ -31,7 +32,13 @@ public class BasicCortex implements Cortex{
 		network.getStructure().finalizeStructure();
 	}
 
-	public void train(double[][] inputs, double[][] outputs) {
+	public void train(String[] sIn, String[] sOut) {
+		double[][] inputs = new double[sIn.length][Start.words.size()];
+		double[][] outputs = new double[sOut.length][Start.words.size()];
+		for(int i = 0; i < sIn.length; i++) {
+			inputs[i] = Utils.stringToNeu(sIn[i]);
+			outputs[i] = Utils.stringToNeu(sOut[i]);
+		}
 		int[] layers = {inputs[0].length, inputs[0].length, outputs[0].length, outputs[0].length};
 		initNet(layers);
 		network.reset();
@@ -48,9 +55,10 @@ public class BasicCortex implements Cortex{
 		} while (train.getError() > Start.errorMargin);
 	}
 	
-	public double[] calculate(double[] inputs) {
+	public String calculate(String input) {
+		double[] inputs = Utils.stringToNeu(input);
 		MLData in = new BasicNeuralData(inputs);
-		return network.compute(in).getData();
+		return Utils.neuToString(network.compute(in).getData());
 	}
 
 	@Override

@@ -21,19 +21,20 @@ public class QueryCortex extends BasicCortex implements Cortex{
 		}
 	}
 	
-	public double[] calculate(double[] inputs) {
+	public String calculate(String input) {
+		double[] inputs = Utils.stringToNeu(input);
 		MLData in = new BasicNeuralData(inputs);
 		return this.replaceEntities(network.compute(in).getData());
 	}
 	
-	public double[] replaceEntities(double[] inputs) {
+	public String replaceEntities(double[] inputs) {
 		String s = Utils.neuToString(inputs);
 		List<String> process = new ArrayList<String>();
 		process.add(s);
 		for(Entity e : entities) {
 			process.add(e.processString(process.get(process.size() - 1)));
 		}
-		return Utils.stringToNeu(process.get(process.size() - 1));
+		return process.get(process.size() - 1);
 	}
 	
 }

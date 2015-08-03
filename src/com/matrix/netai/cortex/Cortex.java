@@ -2,9 +2,9 @@ package com.matrix.netai.cortex;
 
 public interface Cortex {
 	
-	public void train(double[][] in, double[][] out);
+	public void train(String[] sIn, String[] sOut);
 	
-	public double[] calculate(double[] in);
+	public String calculate(String input);
 	
 	public CType getType();
 }
