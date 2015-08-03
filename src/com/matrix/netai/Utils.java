@@ -88,8 +88,8 @@ public class Utils {
 		try {
 			FileWriter fileWriter = new FileWriter(file, true);
 			BufferedWriter bufferWriter = new BufferedWriter(fileWriter);
-			bufferWriter.newLine();
 			bufferWriter.write(line);
+			bufferWriter.newLine();
 			bufferWriter.close();
 		} catch (Exception e) {
 			e.printStackTrace();
